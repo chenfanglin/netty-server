@@ -1,7 +1,7 @@
 # netty-server
 使用方法：
 1、新建applicationcontext.xml
-
+```shell
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
@@ -26,14 +26,18 @@
         </property>
     </bean>
 </beans>
+```
 
 2、在config.properties新增下面配置
+```shell
 http.port=8898
 tcp.port=8899
 so.keepalive=true
 so.backlog=1024
+```
 
 3、启动进程
+```shell
 public class App {
 	public static final Logger log = LoggerFactory.getLogger(App.class);
 	public static void main(String[] args) {
@@ -44,3 +48,4 @@ public class App {
 		}
 	}
 }
+```
