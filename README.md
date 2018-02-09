@@ -15,7 +15,7 @@
 			http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
 			http://www.springframework.org/schema/util http://www.springframework.org/schema/util
 			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd ">
-    <context:component-scan base-package="com.szxx" />
+    <context:component-scan base-package="org.netty" />
     <!-- 读入配置文件,扩展支持Annotation -->
     <!-- http://doc.itstrike.cn/Home/Article/Extension-Spring-use-the-Annotation-will-be-injected-into-the-Bean-in-the-allocation-of-resources -->
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
