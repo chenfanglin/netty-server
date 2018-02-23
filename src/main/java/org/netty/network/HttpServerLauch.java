@@ -7,6 +7,8 @@ package org.netty.network;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +20,8 @@ import io.netty.channel.ChannelFuture;
 @Component
 public class HttpServerLauch {
 
+	public static final Logger logger = LoggerFactory.getLogger(HttpServerLauch.class);
+	
 	@Autowired
 	@Qualifier("httpServerBootstrap")
 	private ServerBootstrap serverBootstrap;
@@ -28,13 +32,21 @@ public class HttpServerLauch {
 	private ChannelFuture serverChannelFuture;
 	
 	@PostConstruct
-    public void start() throws Exception {
-        serverChannelFuture = serverBootstrap.bind(httpPort).sync();
+    public void start() {
+		try {
+			serverChannelFuture = serverBootstrap.bind(httpPort).sync();
+		} catch (Exception e) {
+			logger.error("HttpServerLauch start:" + e);
+		}
     }
 
     @PreDestroy
-    public void stop() throws Exception {
-        serverChannelFuture.channel().closeFuture().sync();
+    public void stop() {
+    	try {
+			serverChannelFuture.channel().closeFuture().sync();
+		} catch (Exception e) {
+			logger.error("HttpServerLauch stop:" + e);
+		}
     }
 
 }
