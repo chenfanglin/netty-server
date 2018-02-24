@@ -15,6 +15,8 @@ public class Header {
     private long cmd;
     private int userId;
     private long gameId;
+    private long clientSeq;
+    private long serverReq;
     private long timeStamp;
     private long bodyLen;
 	public int getLen() {
@@ -59,8 +61,16 @@ public class Header {
 	public void setBodyLen(long bodyLen) {
 		this.bodyLen = bodyLen;
 	}
-    @Override
-    public String toString() {
-    	return super.toString();
-    }
+	public long getClientSeq() {
+		return clientSeq;
+	}
+	public void setClientSeq(long clientSeq) {
+		this.clientSeq = clientSeq;
+	}
+	public long getServerReq() {
+		return serverReq;
+	}
+	public void setServerReq(long serverReq) {
+		this.serverReq = serverReq;
+	}
 }

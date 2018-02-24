@@ -101,6 +101,8 @@ public class CommandCodecHandler extends ByteToMessageCodec<Command<?>> {
 		out.writeInt((int) header.getCmd());
 		out.writeInt(header.getUserId());
 		out.writeInt((int) header.getGameId());
+		out.writeInt((int) header.getClientSeq());
+        out.writeInt((int) header.getServerReq());
 		out.writeLong(header.getTimeStamp());
 		out.setInt(4, headLen);
 		return headLen;

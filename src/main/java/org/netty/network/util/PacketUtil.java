@@ -52,6 +52,10 @@ public class PacketUtil {
         int userId = frame.readInt();
         // 游戏ID
         long gameId = frame.readUnsignedInt();
+        // 解析客户端生成的系列号
+        long clientSeq = frame.readUnsignedInt();
+        // 解析服务器端生成的序列号
+        long serverReq = frame.readUnsignedInt();
         // 解析时间戳
         long timeStamp = frame.readLong();
 
@@ -61,6 +65,8 @@ public class PacketUtil {
         header.setCmd(cmd);
         header.setUserId(userId);
         header.setGameId(gameId);
+        header.setServerReq(serverReq);
+        header.setClientSeq(clientSeq);
         header.setTimeStamp(timeStamp);
         header.setBodyLen(bodyLength);
         return header;
