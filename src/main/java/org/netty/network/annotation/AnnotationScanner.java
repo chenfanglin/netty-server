@@ -83,9 +83,9 @@ public class AnnotationScanner extends AbstractAnnotationScanner implements Init
 				int cmd = cmdCodecAnno.value();
 				CommandDecoder commandDecoder = (CommandDecoder) object;
 				scanCommandDecoders.put(cmd, commandDecoder);
-				logger.info("scanCommandDecoders:" + scanCommandDecoders.toString());
 			}
 		}
+		logger.info("scanCommandDecoders:" + scanCommandDecoders.toString());
 	}
 
 	private void buildCmdProcessorMap() {
@@ -104,6 +104,7 @@ public class AnnotationScanner extends AbstractAnnotationScanner implements Init
 				logger.info("scanCmdProcessors:" + scanCmdProcessors.toString());
 			}
 		}
+		logger.info("scanCmdProcessors:" + scanCmdProcessors.toString());
 	}
 
 	private void buildHttpRequestMap() {
@@ -125,11 +126,11 @@ public class AnnotationScanner extends AbstractAnnotationScanner implements Init
 					String url = requestMapperAnno.value();
 					if (!StringUtils.isEmpty(url)) {
 						scanRequestMappers.put(url, new RequestMapperHolder(service, method));
-						logger.info("scanRequestMappers:" + scanRequestMappers.toString());
 					}
 				}
 			}
 		}
+		logger.info("scanRequestMappers:" + scanRequestMappers.toString());
 	}
 
 	/**

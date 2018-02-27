@@ -70,12 +70,19 @@ public class XXHttpRequest extends DefaultFullHttpRequest {
 
 	public XXHttpRequest(HttpVersion httpVersion, HttpMethod method, String uri) {
 		super(httpVersion, method, uri);
+		initParameters();
 	}
 
 	public XXHttpRequest(HttpVersion httpVersion, HttpMethod method, String uri, ByteBuf content) {
 		super(httpVersion, method, uri, content);
+		initParameters();
 	}
 
+	private void initParameters(){
+		getParametersByGet();
+		getParametersByPost();
+	}
+	
 	/**
 	 * 获取请求参数值,支持获取get和post请求的参数
 	 * 

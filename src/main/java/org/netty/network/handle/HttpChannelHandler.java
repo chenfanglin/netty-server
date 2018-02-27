@@ -86,6 +86,14 @@ public class HttpChannelHandler extends SimpleChannelInboundHandler<FullHttpRequ
 				writeResponse(ctx, response, "Welcome Use Netty Server");
 				return;
 			}
+//			dispatch(ctx, request, response);
+			/**
+			 * 这里不使用业务线程池,因为channelRead方法执行完后会ReferenceCountUtil.release(msg);
+			 * 导致post取参数的时候fullHttpRequest已经被回收,取不到值
+			 * 
+			 * 解决方案：
+			 * 提前取出post里面的参数,放到request的一个Map里面,然后再调用业务线程池去处理
+			 */
 			asyncHttpThreadPool.execute(new HttpRequestTask(ctx, request, response));
 		} catch (Exception e) {
 			logger.error("请求数据包异常:" + e);
