@@ -62,9 +62,9 @@ public class TcpChannelHandler extends SimpleChannelInboundHandler<Command<?>>{
      * 异步执行任务
      */
     private static class CmdProcessTask implements Runnable{
-        private CmdProcessor<?> cmdProcessor;
+        private CmdProcessor cmdProcessor;
         private ChannelHandlerContext ctx;
-        private Command<?> command;
+        private Command command;
 
         public CmdProcessTask(CmdProcessor<?> cmdProcessor, ChannelHandlerContext ctx, Command<?> command) {
             this.cmdProcessor = cmdProcessor;

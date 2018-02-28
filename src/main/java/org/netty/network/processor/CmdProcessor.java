@@ -15,5 +15,5 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public interface CmdProcessor <T extends Command<?>> {
 
-    void process(ChannelHandlerContext ctx, Command<?> command);
+    void process(ChannelHandlerContext ctx, T command);
 }
