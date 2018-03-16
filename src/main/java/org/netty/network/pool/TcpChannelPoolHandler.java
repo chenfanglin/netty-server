@@ -8,18 +8,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.pool.ChannelPoolHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 
 @Component
+@ChannelHandler.Sharable
 public class TcpChannelPoolHandler implements ChannelPoolHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(TcpChannelPoolHandler.class);
 
-	@Value("${client.tcp.timeout}")
-	private Integer timeout;
+	@Value("${client.tcp.timeout.ms}")
+    private int timeout;
 
 	private Integer lengthFiledLength = 4;
 

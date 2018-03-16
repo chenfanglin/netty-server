@@ -11,10 +11,9 @@ import org.netty.network.codec.Command;
 import org.netty.network.codec.CommandDecoder;
 import org.netty.network.packet.Header;
 import org.netty.network.util.PacketUtil;
+import org.netty.network.util.SpringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.google.protobuf.GeneratedMessage;
 
@@ -23,16 +22,21 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 
 /**
- * 命令编解码器
+ * 这里解释一下为什么不使用注解？
+ * 
+ * 当发生断线重连的时候，CommandCodecHandler相当于多次添加到ChannelPipelines中，这是必须添加@ChannelHandler.Sharable注解，
+ * 然而每一个CommandCodecHandler都有针对某个socket的累积对象,CommandCodecHandler是一个不可以共享的对象类型，贴出部分源码：
+ *  static void ensureNotSharable(ChannelHandlerAdapter handler) {
+        if (handler.isSharable()) {
+            throw new IllegalStateException("@Sharable annotation is not allowed");
+        }
+    }
+ * 通过源码发现   ByteToMessageCodec 不允许使用@ChannelHandler.Sharable，所以这里需要每次都新建一个CommandCodecHandler
  */
-@Component
 @SuppressWarnings({"rawtypes"})
 public class CommandCodecHandler extends ByteToMessageCodec<Command<?>> {
 
 	private static final Logger log = LoggerFactory.getLogger(CommandCodecHandler.class);
-
-	@Autowired
-	private AbstractAnnotationScanner cmdCodecScanner;
 
 	@Override
 	protected void encode(ChannelHandlerContext ctx, Command<?> command, ByteBuf frame) throws Exception {
@@ -74,7 +78,7 @@ public class CommandCodecHandler extends ByteToMessageCodec<Command<?>> {
 			// 基于请求头中的命令字返回该具体命令字的编解码
 			int cmd = (int) header.getCmd();
 			// 获取命令字解码器
-			CommandDecoder decoder = cmdCodecScanner.getDecoder(cmd);
+			CommandDecoder decoder = SpringUtils.getBean(AbstractAnnotationScanner.class).getDecoder(cmd);
 			if (decoder == null) {
 				log.warn("没有找到对应的解码器,cmd:{}", cmd);
 			} else {

@@ -16,9 +16,6 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 public class TcpServerInitializer extends ChannelInitializer<SocketChannel> {
 
 	@Autowired
-	private CommandCodecHandler commandCodecHandler;
-	
-	@Autowired
 	private TcpChannelHandler tcpChannelHandler;
 	
 	@Override
@@ -29,7 +26,7 @@ public class TcpServerInitializer extends ChannelInitializer<SocketChannel> {
 		 */
 		pipeline.addLast(new LengthFieldBasedFrameDecoder(1024, 0, 4));
 		// 添加消息编解码器
-		pipeline.addLast(commandCodecHandler);
+		pipeline.addLast(new CommandCodecHandler());
 		// 添加业务处理类
 		pipeline.addLast(tcpChannelHandler);
 	}

@@ -86,13 +86,11 @@ public class HttpChannelHandler extends SimpleChannelInboundHandler<FullHttpRequ
 				writeResponse(ctx, response, "Welcome Use Netty Server");
 				return;
 			}
-//			dispatch(ctx, request, response);
 			/**
-			 * 这里不使用业务线程池,因为channelRead方法执行完后会ReferenceCountUtil.release(msg);
+			 * 使用业务线程池的注意事项：构造XXHttpRequest的时候必须提前取出post里面的参数,放到request的一个Map里面,详见XXHttpRequest构造方法的initParameters(),然后再调用业务线程池去处理
+			 * why?
+			 * 因为channelRead方法执行完后会ReferenceCountUtil.release(msg);
 			 * 导致post取参数的时候fullHttpRequest已经被回收,取不到值
-			 * 
-			 * 解决方案：
-			 * 提前取出post里面的参数,放到request的一个Map里面,然后再调用业务线程池去处理
 			 */
 			asyncHttpThreadPool.execute(new HttpRequestTask(ctx, request, response));
 		} catch (Exception e) {
@@ -156,13 +154,19 @@ public class HttpChannelHandler extends SimpleChannelInboundHandler<FullHttpRequ
 	 */
 	private void writeResponse(ChannelHandlerContext ctx, XXHttpResponse response, Object result) {
 		if (!response.getContentSetted()) {
-			response.setContent(JsonUtils.objectToJson(result));
-			response.setHeaderIfEmpty(HttpHeaders.Names.CONTENT_TYPE,
-					"text/plain; charset=" + response.getResponseCharset());
-			response.headers().set(CONTENT_LENGTH, response.getContentLength());
-			// TODO 需要设置http长连接的存活时间
-			response.headers().set(CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
-			ctx.writeAndFlush(response);
+			try {
+				response.setContent(JsonUtils.objectToJson(result));
+			} catch (Exception e) {
+				response.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+				response.setContent(JsonUtils.objectToJson("系统异常"));
+				logger.error("返回结果转换成json字符串异常:" + e);
+			} finally {
+				response.setHeaderIfEmpty(HttpHeaders.Names.CONTENT_TYPE,
+						"text/plain; charset=" + response.getResponseCharset());
+				response.headers().set(CONTENT_LENGTH, response.getContentLength());
+				response.headers().set(CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
+				ctx.writeAndFlush(response);
+			}
 		}
 	}
 }
